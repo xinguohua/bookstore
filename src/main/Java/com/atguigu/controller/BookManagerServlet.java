@@ -18,7 +18,7 @@ import com.atguigu.utils.WebUtils;
  */
 public class BookManagerServlet extends BaseServlet {
 	private static final long serialVersionUID = 1L;
-	private BookService bs = new BookServiceImpl();
+	private BookService bs = WebUtils.getBean(BookService.class);;
 
 	/*
 	 * 显示所有图书

@@ -19,6 +19,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  *mysql-connector-java-5.1.7-bin.jar、
  *commons-dbutils-1.3.jar
  */
+@Deprecated
 public class JDBCUtils {
 	
 	//创建一个链接池

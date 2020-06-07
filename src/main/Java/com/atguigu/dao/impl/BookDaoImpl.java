@@ -6,7 +6,10 @@ import java.util.List;
 import com.atguigu.dao.BaseDao;
 import com.atguigu.dao.BookDao;
 import com.atguigu.entity.Book;
+import org.springframework.stereotype.Repository;
 
+
+@Repository
 public class BookDaoImpl extends BaseDao<Book> implements BookDao {
 
 	@Override

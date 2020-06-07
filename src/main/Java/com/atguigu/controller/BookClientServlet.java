@@ -11,14 +11,15 @@ import com.atguigu.entity.Book;
 import com.atguigu.entity.Page;
 import com.atguigu.service.BookService;
 import com.atguigu.service.impl.BookServiceImpl;
+import com.atguigu.utils.WebUtils;
 
 /**
  * Servlet implementation class BookClientServlet
  */
-@WebServlet(urlPatterns = "/client/BookClientServlet")
+
 public class BookClientServlet extends BaseServlet {
 	private static final long serialVersionUID = 1L;
-	BookService bs = new BookServiceImpl();
+	BookService bs = WebUtils.getBean(BookService.class);
 
 	/**
 	 * 分页查询前端数据

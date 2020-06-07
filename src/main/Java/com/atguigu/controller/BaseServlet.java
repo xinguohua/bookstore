@@ -40,8 +40,7 @@ public class BaseServlet extends HttpServlet {
 		System.out.println("请求的方法：" + method);
 		// getDeclaredMethod(方法名，参数列表)
 		try {
-			Method m = this.getClass().getDeclaredMethod(method,
-					HttpServletRequest.class, HttpServletResponse.class);
+			Method m = this.getClass().getDeclaredMethod(method, HttpServletRequest.class, HttpServletResponse.class);
 			//invoke(传入要调用方法的对象，传入参数)
 			m.setAccessible(true);
 			m.invoke(this, request,response);

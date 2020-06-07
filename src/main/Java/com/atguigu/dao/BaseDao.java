@@ -15,8 +15,12 @@ import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import com.atguigu.utils.JDBCUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.persistence.criteria.CriteriaBuilder;
+
 
 /**
  * 定义基础的增删改查操作
@@ -26,8 +30,9 @@ import javax.persistence.criteria.CriteriaBuilder;
  */
 public class BaseDao<T> {
 
-	private QueryRunner runner = new QueryRunner();
-
+	//private QueryRunner runner = new QueryRunner();
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	// T User com.atguigu.bean.User
 	private Class<T> type;
 
@@ -54,30 +59,15 @@ public class BaseDao<T> {
 	 * @return
 	 */
 	public T getBean(String sql, Object... params) {
-		long id = Thread.currentThread().getId();
-		System.out.println("BaseDao中的线程号："+id);
-		Connection connection = JDBCUtils.getConnection();
-		// ResultSetHandler
-		T query = null;
+		T object=null;
 		try {
-			// 1、先按照指定的sql语句，从数据库中查出数据
-			// 2、按照指定的类型封装成对应的对象
-			// dbutils. database utils
-			// 封装对象的时候要指定对象的类型
-			// basedao中的基础操作被每个dao都可以使用。
-			// UserDaoImpl extends BaseDao<User>
-			// UserDaoImpl他们来定义操作数据表。BaseDao方便其他使用
-			// 必须获取到泛型的类型 Class 一个类的类型
-			//
-			// ResultSetHandler<T>
-			// this.getClass().getSuperclass()
-			// map.put("id","1") map.put("username","1")
-			query = runner.query(connection, sql, new BeanHandler<T>(type), params);
-		} catch (SQLException e) {
+			object=jdbcTemplate.queryForObject(sql,new BeanPropertyRowMapper<>(type),params);
+
+		}catch (DataAccessException e){
 			e.printStackTrace();
-			throw new RuntimeException();
-		} 
-		return query;
+
+		}
+		return  object;
 	}
 
 	/**
@@ -89,56 +79,20 @@ public class BaseDao<T> {
 	 * @throws Exception 
 	 */
 	public List<T> getBeanList(String sql, Object... params)  {
-		long id = Thread.currentThread().getId();
-		System.out.println("BaseDao中的线程号："+id);
-		Connection connection = JDBCUtils.getConnection();
-		List<T> query = null;
-		try {
-			query = runner.query(connection, sql, new BeanListHandler<>(type), params);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//throw new Exception();
-			//不能抛编译时的异常。我们可以跑运行时异常
-			throw new RuntimeException();
-		} 
-		return query;
+		return jdbcTemplate.query(sql,new BeanPropertyRowMapper<>(type),params);
 	}
 
 	/*
 	 * 执行增删改
 	 */
 	public int update(String sql, Object... params) {
-		long id = Thread.currentThread().getId();
-		System.out.println("BaseDao中的线程号："+id);
-		Connection connection = JDBCUtils.getConnection();
-		int update = 0;
-		try {
-			update = runner.update(connection, sql, params);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();   //在控制台打印异常信息
-			throw new RuntimeException();
-		} 
+		int update = jdbcTemplate.update(sql, params);
 		return update;
 	}
 
 	public Object getSingleValue(String sql, Object... params) {
-		long id = Thread.currentThread().getId();
-		System.out.println("BaseDao中的线程号："+id);
-		Connection connection = JDBCUtils.getConnection();
-		//
-		Object query = null;
-		try {
-			// 代表查出的单个值
-			query = runner.query(connection, sql, new ScalarHandler(), params);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			//throw new RuntimeException();
-			throw new RuntimeException();
-		} 
+		Object object = jdbcTemplate.queryForObject(sql, Object.class, params);
 
-		return query;
+		return object;
 	}
 }

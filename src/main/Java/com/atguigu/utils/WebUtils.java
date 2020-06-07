@@ -11,6 +11,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import com.atguigu.entity.User;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * web项目要使用的一些工具类
@@ -19,6 +22,21 @@ import org.apache.commons.beanutils.BeanUtils;
  * 
  */
 public class WebUtils {
+
+	private static ApplicationContext ioc = new ClassPathXmlApplicationContext("ApplicationContext.xml");
+
+	/**
+	 * 从ioc容器中获取组件
+	 * @param clazz
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T getBean(Class<T> clazz){
+
+		return  ioc.getBean(clazz);
+	}
+
+
 
 	/**
 	 * 将request中提交的数据自动封装为对应的对象
@@ -68,5 +86,25 @@ public class WebUtils {
 		return t;
 	}
 
+	/**
+	 * 生成订单号
+	 * @param user
+	 * @return
+	 */
+	public static String createOrderId(User user) {
+		return new SimpleDateFormat("yyyyMMddhhmmssSSS").format(new Date())
+				.toString() + user.getId();
+	}
+	
+	/**
+	 * 返回系统的当前登陆用户
+	 * @param request
+	 * @return
+	 */
+	public static User getCurrentUser(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("loginUser");
+		return user;
+	}
 
 }

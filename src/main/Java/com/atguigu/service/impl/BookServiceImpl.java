@@ -7,9 +7,13 @@ import com.atguigu.dao.impl.BookDaoImpl;
 import com.atguigu.entity.Book;
 import com.atguigu.entity.Page;
 import com.atguigu.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BookServiceImpl implements BookService {
-	private BookDao bd = new BookDaoImpl();
+	@Autowired
+	private BookDao bd;
 
 	@Override
 	public boolean add(Book book) {
